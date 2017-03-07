@@ -4,6 +4,7 @@
     Author     : Ryan Schissel
 --%>
 
+<%@page import="java.util.Date"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -17,6 +18,11 @@
         <title>Book Web App</title>
     </head>
     <body>
+        <%
+            ServletContext ctx = request.getServletContext();
+            ctx.setAttribute("update", new Date());
+        %>
+        <div class="alert alert-success" role="alert">This website will be temporarily be down for an update on <fmt:formatDate value="${update}" pattern="yyyy-MM-dd HH:mm a" /></div>
         <nav class="navbar navbar-default">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -25,13 +31,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">Authors List</a>
+                <a class="navbar-brand" href="AuthorController?action=list">Authors List</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action<span class="caret"></span></a>
                         <ul class="dropdown-menu">
+                            <li><a id="logOut" data-toggle="modal" data-target="#logOutModal">Log Out</a></li>
+                            <li role="separator" class="divider"></li>
                             <li><a id="edit" data-toggle="modal" data-target="#addModal">Add</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a id="edit" data-toggle="modal" data-target="#editModal">Edit</a></li>
@@ -39,7 +47,9 @@
                             <li><a id="delete"  data-toggle="modal" data-target="#deleteModal">Delete</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a name="reload" href="AuthorController?action=list">Reload</a></li>
+                        </ul>
                     </li>
+                    <li><a id=logOut data-toggle="modal" data-target="#logOutModal">Log Out</a></li>
                 </ul>
             </div>
         </nav>
@@ -77,21 +87,17 @@
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h4 class="modal-title">Edit</h4>
-
                         <div class="modal-body">
-
                             <label for="authorName" class="ui-hidden-accessible">Author Name:</label>
                             <input type="text" name="authorNameEdit" id="authorNameEdit" placeholder="Author Name"><br>
                         </div>
                         <div class="modal-footer">
                             <input type="button" name="edit" class="btn btn-default" onclick='$(".authorForm").attr("action", "AuthorController?action=edit").submit();' data-dismiss="modal" value="Save"/>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
-
         <div id="deleteModal" class="modal fade" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -103,6 +109,24 @@
                         </div>
                         <div class="modal-footer">
                             <input type="button" name="delete" class="btn btn-default" onclick='$(".authorForm").attr("action", "AuthorController?action=delete").submit();' data-dismiss="modal" value="Yes"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="logOutModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete</h4>
+                        <div class="modal-body">
+                            <p>Are you sure you want to log out?<br></p>
+                            <input type="hidden" name="action" value="logout">
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" name="delete" class="btn btn-default" data-dismiss="modal" value="No"/>
+                            <button type="button" class="btn btn-default" href="Accounts?action=logOut" data-dismiss="modal">Yes</button>
                         </div>
                     </div>
                 </div>

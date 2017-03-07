@@ -9,12 +9,15 @@ import com.comdotcom.bookwebapp.model.*;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -61,10 +64,9 @@ public class AuthorController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        LocalDateTime update = LocalDateTime.now();
         response.setContentType("text/html;charset=UTF-8");
         String destination = LIST_PAGE;
-
         try {
             AuthorService as = injectDependenciesAndGetAuthorService();
             String action = request.getParameter(ACTION);
@@ -85,6 +87,7 @@ public class AuthorController extends HttpServlet {
                     refreshList(as, request);
                     break;
                 default:
+                    refreshList(as, request);
                     break;
             }
 
@@ -232,12 +235,12 @@ public class AuthorController extends HttpServlet {
     @Override
     public void init() throws ServletException {
         driverClass = getServletContext().getInitParameter("db.driver.class");
-        url = getServletContext().getInitParameter("db.url");
+        url = getServletContext().getInitParameter("db.bookUrl");
         userName = getServletContext().getInitParameter("db.username");
         password = getServletContext().getInitParameter("db.password");
         dbStrategyClassName = getServletContext().getInitParameter("dbAccessor");
         daoClassName = getServletContext().getInitParameter("authorDao");
-        jndiName = getServletContext().getInitParameter("connPoolName");
+        jndiName = getServletContext().getInitParameter("bookConnPoolName");
 
     }// </editor-fold>
 

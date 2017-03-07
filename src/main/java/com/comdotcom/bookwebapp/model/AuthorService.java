@@ -44,7 +44,6 @@ public class AuthorService {
     }
     
     public Author getAuthorById(String authorId) throws ClassNotFoundException, SQLException {
-        
         return dao.getAuthorById(authorId);
     }
 
