@@ -17,12 +17,12 @@
         <param-value>admin</param-value>
     </context-param>
     <context-param>
-        <param-name>bookConnPoolName</param-name>
+        <param-name>connPoolName</param-name>
         <param-value>jdbc/book</param-value>
     </context-param>
     <context-param>
         <param-name>authorDao</param-name>
-        <param-value>com.comdotcom.bookwebapp.model.AuthorDao</param-value>
+        <param-value>com.comdotcom.bookwebapp.model.ConnPoolAuthorDao</param-value>
     </context-param>
     <context-param>
         <param-name>dbAccessor</param-name>
