@@ -5,7 +5,8 @@
  */
 package com.comdotcom.bookwebapp.controller;
 
-import com.comdotcom.bookwebapp.model.*;
+import com.comdotcom.bookwebapp.entity.Author;
+import com.comdotcom.bookwebapp.service.AuthorService;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
@@ -15,12 +16,15 @@ import javax.ejb.EJB;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
@@ -37,14 +41,14 @@ public class AuthorController extends HttpServlet {
     private static final String SELECTED_AUTHOR_ID = "selectedAuthorId";
     private static final String ERR_PAGE = "/errorpage.html";
     private static final String ACTION = "action";
-   private static final String LIST_PAGE = "/index.jsp";
+    private static final String LIST_PAGE = "/index.jsp";
     private static final String LIST_ACTION = "list";
     private static final String ADD_ACTION = "add";
     private static final String EDIT_ACTION = "edit";
     private static final String DELETE_ACTION = "delete";
-   
-    @EJB
-    private AuthorFacade af;
+
+    private AuthorService as;
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -64,22 +68,22 @@ public class AuthorController extends HttpServlet {
             String action = request.getParameter(ACTION);
             switch (action) {
                 case ADD_ACTION:
-                    addAuthor(af, request);
-                    refreshList(af, request);
+                    addOrEditAuthor(as, request);
+                    refreshList(as, request);
                     break;
                 case EDIT_ACTION:
-                    editAuthor(af, request);
-                    refreshList(af, request);
+                    addOrEditAuthor(as, request);
+                    refreshList(as, request);
                     break;
                 case LIST_ACTION:
-                    refreshList(af, request);
+                    refreshList(as, request);
                     break;
                 case DELETE_ACTION:
-                    removeAuthor(af, request);
-                    refreshList(af, request);
+                    removeAuthor(as, request);
+                    refreshList(as, request);
                     break;
                 default:
-                    refreshList(af, request);
+                    refreshList(as, request);
                     break;
             }
 
@@ -93,29 +97,31 @@ public class AuthorController extends HttpServlet {
 
     }
 
-    private void editAuthor(AuthorFacade af, HttpServletRequest request) throws ClassNotFoundException, SQLException {
+    private void addOrEditAuthor(AuthorService as, HttpServletRequest request) throws ClassNotFoundException, SQLException {
         String authorName = request.getParameter(AUTHOR_NAME_EDIT);
         String authorId = request.getParameter(SELECTED_AUTHOR_ID);
+        Author author = as.findById(authorId);
         if (!authorName.isEmpty() || authorName == null || authorId.isEmpty() || authorId == null) {
-            af.update(authorId, authorName);
+            as.edit(author);
         }
     }
 
-    private void addAuthor(AuthorFacade af, HttpServletRequest request) throws ClassNotFoundException, SQLException {
-        String authorName = request.getParameter(AUTHOR_NAME_ADD);
-        if (!authorName.isEmpty() || authorName == null) {
-            af.addNew(authorName);
-        }
-    }
+//    private void addAuthor(AuthorService as, HttpServletRequest request) throws ClassNotFoundException, SQLException {
+//        String authorName = request.getParameter(AUTHOR_NAME_ADD);
+//        if (!authorName.isEmpty() || authorName == null) {
+//            as.addNew(authorName);
+//        }
+//    }
 
-    private void removeAuthor(AuthorFacade af, HttpServletRequest request) throws ClassNotFoundException, SQLException {
+    private void removeAuthor(AuthorService as, HttpServletRequest request) throws ClassNotFoundException, SQLException {
         String authorId = request.getParameter(SELECTED_AUTHOR_ID);
         if (!authorId.isEmpty() || authorId == null) {
-            af.deleteById(authorId);
+            as.remove(as.findById(authorId));
         }
     }
-    private void refreshList(AuthorFacade af, HttpServletRequest request) throws SQLException, ClassNotFoundException {
-        List<Author> authors = af.findAll();
+
+    private void refreshList(AuthorService as, HttpServletRequest request) throws SQLException, ClassNotFoundException {
+        List<Author> authors = as.findAll();
         request.setAttribute("authors", authors);
     }
 
@@ -160,8 +166,11 @@ public class AuthorController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        
-        
+        ServletContext sctx = getServletContext();
+        WebApplicationContext ctx
+                = WebApplicationContextUtils
+                        .getWebApplicationContext(sctx);
+        as = (AuthorService) ctx.getBean("authorService");
     }// </editor-fold>
 
 }

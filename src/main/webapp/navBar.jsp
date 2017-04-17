@@ -20,7 +20,7 @@
                         <li role="separator" class="divider"></li>
                         <li><a id="delete"  data-toggle="modal" data-target="#${formType}DeleteModal">Delete</a></li>
                     </ul>
-                <li><a href="BookWebApp-jpa-basic" id="homeTab">Home</a></li>
+                <li><a href="#" id="homeTab">Home</a></li>
                 <li><a href="AuthorController?action=list" id="authorsTab">Authors</a></li>
                 <li><a href="BookController?action=list" id="booksTab">Books</a></li>
             </ul>

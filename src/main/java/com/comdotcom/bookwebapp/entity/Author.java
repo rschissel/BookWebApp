@@ -1,4 +1,4 @@
-package com.comdotcom.bookwebapp.model;
+package com.comdotcom.bookwebapp.entity;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -5,7 +5,10 @@
  */
 package com.comdotcom.bookwebapp.controller;
 
-import com.comdotcom.bookwebapp.model.*;
+import com.comdotcom.bookwebapp.entity.Book;
+import com.comdotcom.bookwebapp.entity.Author;
+import com.comdotcom.bookwebapp.service.AuthorService;
+import com.comdotcom.bookwebapp.service.BookService;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.sql.SQLException;
@@ -29,7 +32,7 @@ import javax.sql.DataSource;
 @WebServlet(name = "BookController", urlPatterns = {"/BookController"})
 public class BookController extends HttpServlet {
 
-    private static final String SELECTED_ITEM = "selectedItem";
+    private static final String SELECTED_BOOK = "selectedItem";
     private static final String SELECTED_FIELD = "selectedField";
     private static final String ERR_PAGE = "/errorpage.html";
     private static final String ACTION = "action";
@@ -40,9 +43,10 @@ public class BookController extends HttpServlet {
     private static final String DELETE_ACTION = "delete";
     private static final String TITLE = "title";
     private static final String ISBN = "isbn";
+    private static final String AUTHOR_NAME = "authorName";
     private static final String AUTHOR_ID = "authorId";
-    @EJB
-    private BookFacade bf;
+    private AuthorService as;
+    private BookService bs;
  
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -63,11 +67,11 @@ public class BookController extends HttpServlet {
             String action = request.getParameter(ACTION);
             switch (action) {
                 case ADD_ACTION:
-                    addBook(request);
+                    addOrEditBook(request);
                     refreshList(request);
                     break;
                 case EDIT_ACTION:
-                    editBook(request);
+                    addOrEditBook(request);
                     refreshList(request);
                     break;
                 case LIST_ACTION:
@@ -92,33 +96,40 @@ public class BookController extends HttpServlet {
 
     }
 
-    private void editBook(HttpServletRequest request) throws ClassNotFoundException, SQLException {
-        String itemId = request.getParameter(SELECTED_ITEM);
-        String field = request.getParameter(SELECTED_FIELD);
-        Object value = request.getParameter(field + "Edit");
-        bf.update(itemId, field, value);
-        
-    }
-
-    private void addBook(HttpServletRequest request) throws ClassNotFoundException, SQLException {
+    private void addOrEditBook(HttpServletRequest request) throws ClassNotFoundException, SQLException {
+        String bookId = request.getParameter(SELECTED_BOOK);
         String title = request.getParameter(TITLE);
         String isbn = request.getParameter(ISBN);
-        String authId = request.getParameter(AUTHOR_ID + "Add");
-        Author author = null;
-        if (!title.isEmpty()) {
-            bf.addNew(title, isbn, author);
+        Author author = as.findById(request.getParameter(AUTHOR_ID));
+        Book book = bs.findById(bookId);
+        if (book == null){
+        book.setAuthor(as.findById(AUTHOR_ID));
+        book.setIsbn(isbn);
+        book.setTitle(title);
         }
+        bs.edit(book);
     }
 
+//    private void addBook(HttpServletRequest request) throws ClassNotFoundException, SQLException {
+//        String title = request.getParameter(TITLE);
+//        String isbn = request.getParameter(ISBN);
+//        String authId = request.getParameter(AUTHOR_ID + "Add");
+//        Author author = null;
+//        if (!title.isEmpty()) {
+//            bf.addNew(title, isbn, author);
+//        }
+//    }
+
     private void removeBook(HttpServletRequest request) throws ClassNotFoundException, SQLException {
-        String bookId = request.getParameter(SELECTED_ITEM);
+        String bookId = request.getParameter(SELECTED_BOOK);
+        Book book = bs.findById(bookId);
         if (!bookId.isEmpty()) {
-            bf.deleteById(bookId);
+           bs.remove(book);
         }
     }
 
     private void refreshList(HttpServletRequest request) throws SQLException, ClassNotFoundException {
-        List<Book> books = bf.findAll();
+        List<Book> books = bs.findAll();
         request.setAttribute("books", books);
     }
 
