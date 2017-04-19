@@ -14,13 +14,11 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Action<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a id="edit" data-toggle="modal" data-target="#${formType}AddModal">Add</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a id="edit" data-toggle="modal" data-target="#${formType}EditModal">Edit</a></li>
+                        <li><a id="edit" data-toggle="modal" data-target="#${formType}UpdateModal">Update</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a id="delete"  data-toggle="modal" data-target="#${formType}DeleteModal">Delete</a></li>
                     </ul>
-                <li><a href="#" id="homeTab">Home</a></li>
+                <li><a href="index.jsp" id="homeTab">Home</a></li>
                 <li><a href="AuthorController?action=list" id="authorsTab">Authors</a></li>
                 <li><a href="BookController?action=list" id="booksTab">Books</a></li>
             </ul>
@@ -28,3 +26,4 @@
         </ul>
     </div>
 </nav>
+<c:out value="${errMsg}"/>

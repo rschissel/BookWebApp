@@ -64,31 +64,31 @@ public class BookService {
     }
     
 
-    public List<Book> searchByAuthorId(Integer id) {
-        return bookRepo.searchByAuthorId(id);
-    }
-    
-    public List<Book> searchByAuthorIdAndIsbn(Integer id, String isbn) {
-        return bookRepo.searchByAuthorIdAndIsbn(id, isbn);
-    }
-
-    public List<Book> searchByIsbn(String isbn) {
-        return bookRepo.searchByIsbn(isbn);        
-    } 
-
-    public List<Book> searchByAuthorIdAndTitle(Integer id, String title) {
-        return bookRepo.searchByAuthorIdAndTitle(id, title);        
-    }
-
-    public List<Book> searchByTitle(String title) {
-        return bookRepo.searchByTitle(title);        
-    }
-   
-    public List<Book> searchByAuthorIdAndIsbnAndTitle(Integer id, String isbn, String title) {
-        return bookRepo.searchByAuthorIdAndIsbnAndTitle(id, isbn, title);        
-    }
-
-    public List<Book> searchByIsbnAndTitle(String isbn, String title) {
-        return bookRepo.searchByIsbnAndTitle(isbn, title);        
-    }    
+//    public List<Book> searchByAuthorId(Integer id) {
+//        return bookRepo.searchByAuthorId(id);
+//    }
+//    
+//    public List<Book> searchByAuthorIdAndIsbn(Integer id, String isbn) {
+//        return bookRepo.searchByAuthorIdAndIsbn(id, isbn);
+//    }
+//
+//    public List<Book> searchByIsbn(String isbn) {
+//        return bookRepo.searchByIsbn(isbn);        
+//    } 
+//
+//    public List<Book> searchByAuthorIdAndTitle(Integer id, String title) {
+//        return bookRepo.searchByAuthorIdAndTitle(id, title);        
+//    }
+//
+//    public List<Book> searchByTitle(String title) {
+//        return bookRepo.searchByTitle(title);        
+//    }
+//   
+//    public List<Book> searchByAuthorIdAndIsbnAndTitle(Integer id, String isbn, String title) {
+//        return bookRepo.searchByAuthorIdAndIsbnAndTitle(id, isbn, title);        
+//    }
+//
+//    public List<Book> searchByIsbnAndTitle(String isbn, String title) {
+//        return bookRepo.searchByIsbnAndTitle(isbn, title);        
+//    }    
 }

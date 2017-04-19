@@ -41,7 +41,7 @@ public class AuthorController extends HttpServlet {
     private static final String SELECTED_AUTHOR_ID = "selectedAuthorId";
     private static final String ERR_PAGE = "/errorpage.html";
     private static final String ACTION = "action";
-    private static final String LIST_PAGE = "/index.jsp";
+    private static final String LIST_PAGE = "/authorList.jsp";
     private static final String LIST_ACTION = "list";
     private static final String ADD_ACTION = "add";
     private static final String EDIT_ACTION = "edit";
@@ -72,6 +72,11 @@ public class AuthorController extends HttpServlet {
                     refreshList(as, request);
                     break;
                 case EDIT_ACTION:
+                    String authorId = request.getParameter(SELECTED_AUTHOR_ID);
+                    if(authorId == null) {
+                        refreshList(as, request);
+                        break;
+                    }
                     addOrEditAuthor(as, request);
                     refreshList(as, request);
                     break;
@@ -100,10 +105,20 @@ public class AuthorController extends HttpServlet {
     private void addOrEditAuthor(AuthorService as, HttpServletRequest request) throws ClassNotFoundException, SQLException {
         String authorName = request.getParameter(AUTHOR_NAME_EDIT);
         String authorId = request.getParameter(SELECTED_AUTHOR_ID);
-        Author author = as.findById(authorId);
-        if (!authorName.isEmpty() || authorName == null || authorId.isEmpty() || authorId == null) {
-            as.edit(author);
+        Author author = null;
+        
+        if (authorId == null) {
+            // must be a new record
+            author = new Author();
+            author.setAuthorName(authorName);
+         
+            
+        } else {
+            // must be an edit of an exiting record
+            author = as.findById(authorId);
+            author.setAuthorName(authorName);
         }
+           as.edit(author);
     }
 
 //    private void addAuthor(AuthorService as, HttpServletRequest request) throws ClassNotFoundException, SQLException {

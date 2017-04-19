@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.comdotcom.bookwebapp.entity;
 
 import java.io.Serializable;
@@ -16,8 +21,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -39,14 +44,14 @@ public class Author implements Serializable {
     @Basic(optional = false)
     @Column(name = "author_id")
     private Integer authorId;
-    @Size(max = 80)
     @Column(name = "author_name")
     private String authorName;
     @Column(name = "date_added")
     @Temporal(TemporalType.DATE)
     private Date dateAdded;
-    
-    
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private Set<Book> bookSet;
+
     public Author() {
     }
 
@@ -78,6 +83,15 @@ public class Author implements Serializable {
         this.dateAdded = dateAdded;
     }
 
+    @XmlTransient
+    public Set<Book> getBookSet() {
+        return bookSet;
+    }
+
+    public void setBookSet(Set<Book> bookSet) {
+        this.bookSet = bookSet;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -100,7 +114,7 @@ public class Author implements Serializable {
 
     @Override
     public String toString() {
-        return "com.comdotcom.bookwebapp.model.Author[ authorId=" + authorId + " ]";
+        return "reverse.engineering.Author[ authorId=" + authorId + " ]";
     }
     
 }

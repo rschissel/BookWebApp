@@ -16,18 +16,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface BookRepository extends JpaRepository<Book, Integer>, Serializable{
 
-    public List<Book> searchByAuthorId(Integer id);
-
-    public List<Book> searchByAuthorIdAndIsbn(Integer id, String bn);
-
-    public List<Book> searchByIsbn(String bn);
-
-    public List<Book> searchByAuthorIdAndTitle(Integer id, String title);
-
-    public List<Book> searchByTitle(String title);
-
-    public List<Book> searchByAuthorIdAndIsbnAndTitle(Integer id, String bn, String title);
-
-    public List<Book> searchByIsbnAndTitle(String bn, String title);
+//    public List<Book> searchByAuthorId(Integer id);
+//
+//    public List<Book> searchByAuthorIdAndIsbn(Integer id, String bn);
+//
+//    public List<Book> searchByIsbn(String bn);
+//
+//    public List<Book> searchByAuthorIdAndTitle(Integer id, String title);
+//
+//    public List<Book> searchByTitle(String title);
+//
+//    public List<Book> searchByAuthorIdAndIsbnAndTitle(Integer id, String bn, String title);
+//
+//    public List<Book> searchByIsbnAndTitle(String bn, String title);
     
 }

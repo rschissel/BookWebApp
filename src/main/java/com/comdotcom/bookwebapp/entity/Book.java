@@ -1,4 +1,4 @@
-/**
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -18,7 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -41,14 +40,12 @@ public class Book implements Serializable {
     @Basic(optional = false)
     @Column(name = "book_id")
     private Integer bookId;
-    @Size(max = 255)
     @Column(name = "title")
     private String title;
-    @Size(max = 45)
     @Column(name = "isbn")
     private String isbn;
-    @JoinColumn(name = "author", referencedColumnName = "author")
-    @ManyToOne
+    @JoinColumn(name = "author", referencedColumnName = "author_id")
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Author author;
 
     public Book() {
@@ -112,7 +109,7 @@ public class Book implements Serializable {
 
     @Override
     public String toString() {
-        return "com.comdotcom.bookwebapp.model.Book[ bookId=" + bookId + " ]";
+        return "reverse.engineering.Book[ bookId=" + bookId + " ]";
     }
-
+    
 }

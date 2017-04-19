@@ -10,20 +10,18 @@ import com.comdotcom.bookwebapp.entity.Author;
 import com.comdotcom.bookwebapp.service.AuthorService;
 import com.comdotcom.bookwebapp.service.BookService;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.ejb.EJB;
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  *
@@ -36,7 +34,7 @@ public class BookController extends HttpServlet {
     private static final String SELECTED_FIELD = "selectedField";
     private static final String ERR_PAGE = "/errorpage.html";
     private static final String ACTION = "action";
-    private static final String INDEX = "/index.jsp";
+    private static final String INDEX = "/bookList.jsp";
     private static final String LIST_ACTION = "list";
     private static final String ADD_ACTION = "add";
     private static final String EDIT_ACTION = "edit";
@@ -44,10 +42,11 @@ public class BookController extends HttpServlet {
     private static final String TITLE = "title";
     private static final String ISBN = "isbn";
     private static final String AUTHOR_NAME = "authorName";
-    private static final String AUTHOR_ID = "authorId";
+    private static final String AUTHOR_ID = "author";
+
     private AuthorService as;
     private BookService bs;
- 
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -87,6 +86,7 @@ public class BookController extends HttpServlet {
             }
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             request.setAttribute("errMsg", ex.getMessage());
         }
 
@@ -97,15 +97,35 @@ public class BookController extends HttpServlet {
     }
 
     private void addOrEditBook(HttpServletRequest request) throws ClassNotFoundException, SQLException {
+        String field = request.getParameter(SELECTED_FIELD);
         String bookId = request.getParameter(SELECTED_BOOK);
         String title = request.getParameter(TITLE);
         String isbn = request.getParameter(ISBN);
-        Author author = as.findById(request.getParameter(AUTHOR_ID));
-        Book book = bs.findById(bookId);
-        if (book == null){
-        book.setAuthor(as.findById(AUTHOR_ID));
-        book.setIsbn(isbn);
-        book.setTitle(title);
+        String authorId = request.getParameter(AUTHOR_ID);
+        Author author = as.findById(authorId);
+        Book book = null;
+        if (field == null) {
+            book = new Book();
+            book.setAuthor(author);
+            book.setIsbn(isbn);
+            book.setTitle(title);
+        }
+        else{
+            book = bs.findById(bookId);
+            switch (field){
+                case "title":
+                    book.setTitle(title);
+                    break;
+                case "isbn":
+                    book.setIsbn(isbn);
+                    break;
+                case "author":
+                    book.setAuthor(author);
+                    break;
+                default:
+                    break;
+                 
+            }
         }
         bs.edit(book);
     }
@@ -119,18 +139,19 @@ public class BookController extends HttpServlet {
 //            bf.addNew(title, isbn, author);
 //        }
 //    }
-
     private void removeBook(HttpServletRequest request) throws ClassNotFoundException, SQLException {
         String bookId = request.getParameter(SELECTED_BOOK);
         Book book = bs.findById(bookId);
         if (!bookId.isEmpty()) {
-           bs.remove(book);
+            bs.remove(book);
         }
     }
 
     private void refreshList(HttpServletRequest request) throws SQLException, ClassNotFoundException {
         List<Book> books = bs.findAll();
         request.setAttribute("books", books);
+        List<Author> authors = as.findAll();
+        request.setAttribute("authors", authors);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -174,7 +195,12 @@ public class BookController extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-
+        ServletContext sctx = getServletContext();
+        WebApplicationContext ctx
+                = WebApplicationContextUtils
+                        .getWebApplicationContext(sctx);
+        as = (AuthorService) ctx.getBean("authorService");
+        bs = (BookService) ctx.getBean("bookService");
     }// </editor-fold>
 
 }

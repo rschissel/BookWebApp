@@ -14,67 +14,80 @@
 
 
 <!DOCTYPE html>
-<form class="authorForm" method="post">
-    <input type="hidden" name="formType" value="author">
-    <table border="2">
-        <c:forEach items="${authors}" var="current">
-            <tr>
-                <td><input type="checkbox" name="selectedAuthorId" id="selectedAuthorId" value="${current.authorId}"><c:out value=" ${current.authorId}"/><td>
-                <td><c:out value="${current.authorName}"/></td>
-                <td><c:out value="${current.dateAdded}"/></td>
-            </tr>
-        </c:forEach>
-    </table>
-    <div id="authorAddModal" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Add</h4>
-                    <div class="modal-body">
-                        <label for="authorName" class="ui-hidden-accessible">Author Name:</label>
-                        <input type="text" name="authorNameAdd" id="authorNameAdd" placeholder="Author Name"><br
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <title>Book Web App</title>
+        <link href="resources/css/main.css" rel="stylesheet" type="text/css"/>
+    </head>
+    <body>
+        <jsp:include page="navBar.jsp"/>
+        <form class="authorForm" method="post">
+            <input type="hidden" name="formType" value="author">
+            <table border="2">
+                <c:forEach items="${authors}" var="current">
+                    <tr>
+                        <td><input type="checkbox" name="selectedAuthorId" id="selectedAuthorId" value="${current.authorId}"><c:out value=" ${current.authorId}"/><td>
+                        <td><c:out value="${current.authorName}"/></td>
+                        <td><c:out value="${current.dateAdded}"/></td>
+                    </tr>
+                </c:forEach>
+            </table>
+            <div id="authorAddModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Add</h4>
+                            <div class="modal-body">
+                                <label for="authorName" class="ui-hidden-accessible">Author Name:</label>
+                                <input type="text" name="authorNameAdd" id="authorNameAdd" placeholder="Author Name"><br
+                            </div>
+                            <div class="modal-footer">
+                                <input type="button" name="add" class="btn btn-default" onclick='$(".authorForm").attr("action", "AuthorController?action=add").submit();' data-dismiss="modal" value="Save"/>
+                            </div>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <input type="button" name="add" class="btn btn-default" onclick='$(".authorForm").attr("action", "AuthorController?action=add").submit();' data-dismiss="modal" value="Save"/>
+                </div>
+            </div>
+        </div>
+        <div id="authorEditModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Edit</h4>
+                        <div class="modal-body">
+                            <label for="authorName" class="ui-hidden-accessible">Author Name:</label>
+                            <input type="text" name="authorNameEdit" id="authorNameEdit" placeholder="Author Name"><br>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" name="edit" class="btn btn-default" onclick='$(".authorForm").attr("action", "AuthorController?action=edit").submit();' data-dismiss="modal" value="Save"/>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<div id="authorEditModal" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Edit</h4>
-                <div class="modal-body">
-                    <label for="authorName" class="ui-hidden-accessible">Author Name:</label>
-                    <input type="text" name="authorNameEdit" id="authorNameEdit" placeholder="Author Name"><br>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" name="edit" class="btn btn-default" onclick='$(".authorForm").attr("action", "AuthorController?action=edit").submit();' data-dismiss="modal" value="Save"/>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div id="authorDeleteModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Delete</h4>
-                <div class="modal-body">
-                    <p>Are you sure you want to delete the selected author?<br></p>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" name="delete" class="btn btn-default" onclick='$(".authorForm").attr("action", "AuthorController?action=delete").submit();' data-dismiss="modal" value="Yes"/>
+        <div id="authorDeleteModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete</h4>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete the selected author?<br></p>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="button" name="delete" class="btn btn-default" onclick='$(".authorForm").attr("action", "AuthorController?action=delete").submit();' data-dismiss="modal" value="Yes"/>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-</form>
-     <c:out value="${errMsg}"/>
+    </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="resources/js/bookwebapp.js" type="text/javascript"></script>
+</body>
+</html>
